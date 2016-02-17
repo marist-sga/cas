@@ -4,6 +4,7 @@ use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Subfission\Cas\Facades\Cas;
 use App\User;
+use Illuminate\Support\Facades\Crypt;
 
 class CASAuth
 {
@@ -41,7 +42,7 @@ class CASAuth
         $newUser = new User;
         $user = Cas::user();
         $splitUser = explode($user, "@");
-        $newUser->firstOrCreate(['email' => $user, 'cwid' => $splitUser[0]]);
+        $newUser->firstOrCreate(['email' => Crypt::encrypt($user), 'cwid' => Crypt::encrypt($splitUser[0])]);
         return $next($request);
     }
 }
